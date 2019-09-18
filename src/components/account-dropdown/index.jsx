@@ -31,6 +31,7 @@ export class AccountDropdown extends React.Component {
     onSelect: PropTypes.func,
     style: PropTypes.any,
     title: PropTypes.string,
+    titleNoAccounts: PropTypes.string,
     urlState: PropTypes.object,
   };
 
@@ -38,6 +39,7 @@ export class AccountDropdown extends React.Component {
     accountFilter: account => true,
     collection: "newrelic",
     title: "Select account...",
+    titleNoAccounts: "No accounts found",
   };
 
   constructor(props) {
@@ -155,7 +157,7 @@ export class AccountDropdown extends React.Component {
   }
 
   render() {
-    const { accountFilter, className, style, title } = this.props;
+    const { accountFilter, className, style, title, titleNoAccounts } = this.props;
     const { accounts, defaultAccount, selected } = this.state;
 
     if (!accounts || defaultAccount === undefined) {
@@ -168,8 +170,16 @@ export class AccountDropdown extends React.Component {
       </DropdownItem>
     ));
 
+    const haveAccounts = items.length > 0;
+    const dropdownTitle = haveAccounts ? title : titleNoAccounts;
+
     return (
-      <Dropdown className={className} style={style} title={(selected || {}).name || title}>
+      <Dropdown
+        className={className}
+        disabled={!haveAccounts}
+        style={style}
+        title={(selected || {}).name || dropdownTitle}
+      >
         {items}
       </Dropdown>
     );
